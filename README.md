@@ -1,5 +1,5 @@
 # create-sui-dapp
-Command-line interface for Sui dApp Starter
+Command-line interface for [Sui dApp Starter](https://github.com/kkomelin/sui-dapp-starter)
 
 ## Requirements
 

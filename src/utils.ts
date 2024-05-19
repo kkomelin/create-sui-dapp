@@ -26,6 +26,19 @@ export const cloneStarter = async (projectName: string) => {
     "+ Initialized a new git repo",
     "- Cannot initialize a new git repo"
   );
+
+  if (await isPnpmInstalled()) {
+    await runCommand(
+      `cd ${projectName} && pnpm install`,
+      "+ Initialized dependencies",
+      "- Cannot install dependencies"
+    );
+  }
+  else {
+    displayErrorMessage('- PNPM is not found. Please install https://pnpm.io/installation')
+  }
+
+  displaySuccessMessage('Happy coding!')
 };
 
 export const checkGit = async () => {
@@ -33,36 +46,10 @@ export const checkGit = async () => {
     await commandExists("git");
   } catch {
     displayErrorMessage(
-      "Git not found. Please install https://git-scm.com/downloads"
+      "Git is not found. Please install https://git-scm.com/downloads"
     );
     process.exit(1);
   }
-};
-
-export const checkFolderExists = (projectPath: string) => {
-  const fullPath = path.resolve(process.cwd(), projectPath);
-
-  let doesFolderExist = false;
-  try {
-    doesFolderExist = fs.existsSync(fullPath);
-  } catch {
-    doesFolderExist = true;
-  }
-
-  if (doesFolderExist) {
-    displayErrorMessage(
-      "The folder already exists. Please remove or choose another project name."
-    );
-    process.exit(1);
-  }
-};
-
-export const displayErrorMessage = (message: string) => {
-  console.error(chalk.red(message));
-};
-
-export const displaySuccessMessage = (message: string) => {
-  console.log(chalk.green(message));
 };
 
 export async function promptForProjectName(args: string) {
@@ -87,7 +74,42 @@ export async function promptForProjectName(args: string) {
   return args;
 }
 
-export const runCommand = (
+const isPnpmInstalled = async () => {
+  try {
+    await commandExists("pnpm");
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const checkFolderExists = (projectPath: string) => {
+  const fullPath = path.resolve(process.cwd(), projectPath);
+
+  let doesFolderExist = false;
+  try {
+    doesFolderExist = fs.existsSync(fullPath);
+  } catch {
+    doesFolderExist = true;
+  }
+
+  if (doesFolderExist) {
+    displayErrorMessage(
+      "The folder already exists. Please remove or choose another project name."
+    );
+    process.exit(1);
+  }
+};
+
+const displayErrorMessage = (message: string) => {
+  console.error(chalk.red(message));
+};
+
+const displaySuccessMessage = (message: string) => {
+  console.log(chalk.green(message));
+};
+
+const runCommand = (
   command: string,
   successMessage: string,
   errorMessage: string,
