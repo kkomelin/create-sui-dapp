@@ -3,7 +3,12 @@
 import chalk from "chalk";
 import { Command } from "commander";
 import { APP_NAME } from "./constants.js";
-import { checkGit, cloneStarter, promptForProjectName } from "./utils.js";
+import {
+  checkGit,
+  cloneStarter,
+  displaySuccessMessage,
+  promptForProjectName,
+} from "./utils.js";
 
 const main = async () => {
   await checkGit();
@@ -16,6 +21,7 @@ const main = async () => {
     .arguments("[project-name]")
     .action(async (args: string) => {
       const projectName = await promptForProjectName(args);
+      displaySuccessMessage(`\nCreating "${projectName}" project...\n`);
       await cloneStarter(projectName);
     });
 

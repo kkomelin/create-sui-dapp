@@ -16,21 +16,21 @@ export const cloneStarter = async (projectName: string) => {
   );
 
   await runCommand(
-    `cd ${projectName} && rm -rf ./.git`,
+    `cd "${projectName}" && rm -rf ./.git`,
     "+ Removed old git history",
     "- Cannot remove old git history"
   );
 
   await runCommand(
-    `cd ${projectName} && git init && git add . && git commit -m "Initial commit"`,
+    `cd "${projectName}" && git init && git add . && git commit -m "Initial commit"`,
     "+ Initialized a new git repo",
     "- Cannot initialize a new git repo"
   );
 
   if (await isPnpmInstalled()) {
     await runCommand(
-      `cd ${projectName} && pnpm install`,
-      "+ Initialized dependencies",
+      `cd "${projectName}" && pnpm install`,
+      "+ Installed dependencies",
       "- Cannot install dependencies"
     );
   }
@@ -38,7 +38,8 @@ export const cloneStarter = async (projectName: string) => {
     displayErrorMessage('- PNPM is not found. Please install https://pnpm.io/installation')
   }
 
-  displaySuccessMessage('Happy coding!')
+  displaySuccessMessage("\nHappy coding!");
+  console.log(`\n ~ and if you like it, give it a star ${SOURCE_REPO}\n`);
 };
 
 export const checkGit = async () => {
@@ -68,7 +69,6 @@ export async function promptForProjectName(args: string) {
         },
       },
     ]);
-    displaySuccessMessage(`Creating "${projectName}" project...`);
     return projectName;
   }
   return args;
@@ -101,11 +101,11 @@ const checkFolderExists = (projectPath: string) => {
   }
 };
 
-const displayErrorMessage = (message: string) => {
+export const displayErrorMessage = (message: string) => {
   console.error(chalk.red(message));
 };
 
-const displaySuccessMessage = (message: string) => {
+export const displaySuccessMessage = (message: string) => {
   console.log(chalk.green(message));
 };
 
