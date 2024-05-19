@@ -10,7 +10,7 @@ Command-line interface for [Sui dApp Starter](https://github.com/kkomelin/sui-da
 ## Use
 
 ```bash
-pnpm create sui-dapp
+pnpm create sui-dapp@latest
 ```
 
 ## Links
