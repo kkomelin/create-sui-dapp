@@ -7,6 +7,7 @@ import {
   checkGit,
   cloneStarter,
   displaySuccessMessage,
+  getPackageVersion,
   promptForProjectName,
 } from "./utils.js";
 
@@ -18,6 +19,7 @@ const main = async () => {
   program
     .name("create-sui-dapp")
     .description(`Install ${APP_NAME} with ease`)
+    .version(getPackageVersion())
     .arguments("[project-name]")
     .action(async (args: string) => {
       const projectName = await promptForProjectName(args);

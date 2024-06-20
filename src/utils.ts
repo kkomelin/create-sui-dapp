@@ -4,6 +4,7 @@ import commandExists from "command-exists";
 import fs from "fs";
 import inquirer from "inquirer";
 import path from "path";
+import { fileURLToPath } from "url";
 import { SOURCE_REPO } from "./constants.js";
 
 export const cloneStarter = async (projectName: string) => {
@@ -33,9 +34,10 @@ export const cloneStarter = async (projectName: string) => {
       "+ Installed dependencies",
       "- Cannot install dependencies"
     );
-  }
-  else {
-    displayErrorMessage('- PNPM is not found. Please install https://pnpm.io/installation')
+  } else {
+    displayErrorMessage(
+      "- PNPM is not found. Please install https://pnpm.io/installation"
+    );
   }
 
   displaySuccessMessage("\nHappy coding!");
@@ -107,6 +109,26 @@ export const displayErrorMessage = (message: string) => {
 
 export const displaySuccessMessage = (message: string) => {
   console.log(chalk.green(message));
+};
+
+export const getPackageVersion = () => {
+  try {
+    const packageFile = fs.readFileSync(
+      path.join(getCliDirectory(), "../package.json"),
+      "utf8"
+    );
+    const packageMeta = JSON.parse(packageFile);
+    return packageMeta.version;
+  } catch (e) {
+    displayErrorMessage(`Cannot read package meta-data.`);
+    console.error(e);
+    process.exit(1);
+  }
+};
+
+const getCliDirectory = () => {
+  const currentFileUrl = import.meta.url;
+  return path.dirname(decodeURI(fileURLToPath(currentFileUrl)));
 };
 
 const runCommand = (
