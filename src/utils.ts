@@ -43,7 +43,7 @@ export const cloneStarter = async (projectName: string) => {
 
   displayInfoMessage("\nHappy coding!");
   console.log(
-    `\n ~ and if you like ${chalk.blue(
+    `\n ~ and if you like ${chalk.green(
       APP_NAME
     )}, give it a star ${SOURCE_REPO}\n`
   );
@@ -113,7 +113,7 @@ export const displayErrorMessage = (message: string) => {
 };
 
 export const displayInfoMessage = (message: string) => {
-  console.log(chalk.blue(message));
+  console.log(chalk.green(message));
 };
 
 export const getPackageVersion = () => {
