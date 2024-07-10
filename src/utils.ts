@@ -3,45 +3,50 @@ import { execSync } from "child_process";
 import commandExists from "command-exists";
 import fs from "fs";
 import inquirer from "inquirer";
+import ora from "ora";
 import path from "path";
 import { fileURLToPath } from "url";
-import { SOURCE_REPO } from "./constants.js";
+import { APP_NAME, SOURCE_REPO } from "./constants.js";
 
 export const cloneStarter = async (projectName: string) => {
   checkFolderExists(projectName);
 
   await runCommand(
     `git clone --depth 1 ${SOURCE_REPO} "${projectName}"`,
-    "+ Cloned the source repo",
-    "- Cannot clone the source repo"
+    "Cloning the source repo",
+    "Cannot clone the source repo"
   );
 
   await runCommand(
     `cd "${projectName}" && rm -rf ./.git`,
-    "+ Removed old git history",
-    "- Cannot remove old git history"
+    "Removing old git history",
+    "Cannot remove old git history"
   );
 
   await runCommand(
     `cd "${projectName}" && git init && git add . && git commit -m "Initial commit"`,
-    "+ Initialized a new git repo",
-    "- Cannot initialize a new git repo"
+    "Initializing a new git repo",
+    "Cannot initialize a new git repo"
   );
 
   if (await isPnpmInstalled()) {
     await runCommand(
       `cd "${projectName}" && pnpm install`,
-      "+ Installed dependencies",
-      "- Cannot install dependencies"
+      "Installing dependencies",
+      "Cannot install dependencies"
     );
   } else {
     displayErrorMessage(
-      "- PNPM is not found. Please install https://pnpm.io/installation"
+      "PNPM is not found. Please install it first https://pnpm.io/installation and then run `pnpm install` from the project root."
     );
   }
 
-  displaySuccessMessage("\nHappy coding!");
-  console.log(`\n ~ and if you like it, give it a star ${SOURCE_REPO}\n`);
+  displayInfoMessage("\nHappy coding!");
+  console.log(
+    `\n ~ and if you like ${chalk.blue(
+      APP_NAME
+    )}, give it a star ${SOURCE_REPO}\n`
+  );
 };
 
 export const checkGit = async () => {
@@ -107,8 +112,8 @@ export const displayErrorMessage = (message: string) => {
   console.error(chalk.red(message));
 };
 
-export const displaySuccessMessage = (message: string) => {
-  console.log(chalk.green(message));
+export const displayInfoMessage = (message: string) => {
+  console.log(chalk.blue(message));
 };
 
 export const getPackageVersion = () => {
@@ -133,21 +138,27 @@ const getCliDirectory = () => {
 
 const runCommand = (
   command: string,
-  successMessage: string,
+  startMessage: string,
   errorMessage: string,
   verbose: boolean = false
 ) => {
   const ignore = !verbose ? "ignore" : undefined;
 
+  const spinner = ora({
+    text: startMessage,
+    stream: process.stdout,
+    spinner: "star",
+  }).start();
+
   try {
     execSync(command, {
       stdio: ignore,
     });
+
+    spinner.succeed();
   } catch (e) {
-    displayErrorMessage(errorMessage);
+    spinner.fail(chalk.red(errorMessage));
     verbose && console.error(e);
     process.exit(1);
   }
-
-  displaySuccessMessage(successMessage);
 };

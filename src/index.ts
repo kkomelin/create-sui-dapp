@@ -6,7 +6,7 @@ import { APP_NAME } from "./constants.js";
 import {
   checkGit,
   cloneStarter,
-  displaySuccessMessage,
+  displayInfoMessage,
   getPackageVersion,
   promptForProjectName,
 } from "./utils.js";
@@ -23,7 +23,7 @@ const main = async () => {
     .arguments("[project-name]")
     .action(async (args: string) => {
       const projectName = await promptForProjectName(args);
-      displaySuccessMessage(`\nCreating "${projectName}" project...\n`);
+      displayInfoMessage(`\nCreating "${projectName}" project...\n`);
       await cloneStarter(projectName);
     });
 
