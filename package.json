@@ -1,6 +1,6 @@
 {
   "name": "create-sui-dapp",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Command-line interface for Sui dApp Starter",
   "type": "module",
   "bin": {
